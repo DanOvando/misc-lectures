@@ -1,0 +1,2810 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Wet-Blanketing 101</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dan Ovando" />
+    <meta name="date" content="2020-09-11" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+class: center, middle, inverse
+# Releasing your Inner Skeptic
+## (Very) Intro to Causal Inference
+### Dan Ovando - Hilborn Lab Meeting
+### 2020-09-11
+
+
+&lt;img src="https://media.giphy.com/media/KtbPylMXJ6IPS/giphy.gif" style="display: block; margin: auto;" /&gt;
+
+
+???
+
+Image credit: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sharingan_triple.svg)
+
+---
+
+# Is Wine Good For You?
+
+.pull-left[
+
+Seems like it should be an easy question to answer every slow news day
+
+Why?
+
+- Can't randomly assign wine use
+
+- More money == more wine?
+
+- Depends on *how much* wine
+
+- Long-term effects
+
+- etc. 
+] .pull-right[
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;img src="https://media.giphy.com/media/E3L5goMMSoAAo/giphy.gif" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+---
+
+# Do Management Interventions Work?
+
+Answering "is wine good for you" seems like it should be easier than say what makes an ITQ work...
+
+
+So what does this say about program evaluation in fisheries?
+  
+--
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.center[***Finding a clear-cut causal effect should be pretty rare***]
+
+
+---
+
+# Less Drum-Lines = More Sharks?
+
+&lt;br&gt;
+&lt;br&gt;
+
+&gt; Banning drumlines (29% (−13–52%)) or moving towards more selective hook and line fishing (25% (−8–48%)) were estimated to be less effective but may be more-acceptable management interventions in some contexts -- MacNeil et al. 2020
+
+
+Our goals for today: 
+  
+  - What do we need to assume to make this statement true?
+  
+  - Are those assumptions reasonable for this paper?
+
+
+---
+
+# 
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/inference.jpeg" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# What Is Causal Inference?
+
+The Rubin Causal Model says that the causal effect of a treatment `\(T\)` on outcome `\(y\)` for unit `\(i\)` is
+
+`$$y_i(T = 1) - y_i(T = 0)$$`
+  
+Seems straightforward enough? What's the problem here?
+
+--
+
+.center[The fundamental problem of causal inference: *We can't observe the exact same unit both with and without treatment*]
+ 
+&lt;img src="https://media.giphy.com/media/DUyLrL6MIFBsI/giphy.gif" width="40%" style="display: block; margin: auto;" /&gt;
+ 
+
+---
+
+# What Is Causal Inference?
+
+Since we can't observe the same unit with and without treatment, we have to turn to statistics:
+
+
+Estimate the mean difference between treated and untreated groups
+
+`$$E[Y_i|T=1] - E[y_i|T=0]$$`
+
+In order for this to pass the "causal" test, ***treatment has to be as good as randomly assigned***
+
+`$$y_i = \beta_{T=0} +\beta_{t=1}T_i + \epsilon_i$$`
+
+`$$Cov(T_i,\epsilon_i) = 0$$`
+
+
+---
+
+# What is Causal Inference?
+
+This is why randomized control trials are so powerful: Easy to argue that any differences between control and treatment groups are because of the treatment
+
+But, RCTs are hard / bordering impossible in natural resource management
+
+
+Ask yourself:
+
+.center[*How close to a randomized control trial is the paper I'm reading?*]
+
+
+
+---
+
+# Why Does This Matter?
+
+.pull-left[
+
+Since we can never **proove** causality, easy to be a "causal inference guy"
+  - Give me good descriptive stats over bad causal inference any day
+
+But, it really can matter
+  - Omitted Variable Bias
+  - Collider Bias
+  - Reverse Causality
+
+Are all **really** common in natural settings and can cause **big** problems
+
+] 
+.pull-right[
+
+&lt;img src="https://imgs.xkcd.com/comics/correlation.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+# Omitted Variable Bias
+
+
+As the name implies, leaving out an important variable can bias your estimate of the causal effect of your treatment 
+
+.center[*What defines "important"*]
+
+--
+
+
+Under what conditions is 
+
+`$$y_i = \beta_0 +\beta_1T_i + \beta_2w_i + \epsilon_i$$`
+
+Equivalent to
+
+`$$y_i = \beta_0 +\beta_1T_i + \epsilon_i$$`
+
+---
+
+# Omitted Variable Bias
+
+`$$y_i = \beta_0 +\beta_1T_i + \beta_2w_i + \epsilon_i$$`
+ 
+In this model, you can show that if you leave `\(w\)` out of your regression, your estimate of `\(\beta_1\)`, the thing you care about, will be biased according to
+
+`$$\lim_{N\to\infty} \hat{\beta_1} = \beta_1 + \color{red}{\beta_2}\color{blue}{cor(T,w)}\frac{\sigma_w}{\sigma_T}$$`
+OVB is a function of
+
+The correlation between the omitted variable and the outcome `\(\color{red}{\beta_2}\)`
+ 
+The correlation between the treatment and the omitted variable `\(\color{blue}{cor(T,w)}\)`
+
+---
+
+
+# Omitted Variable Bias in Action
+
+True Model: MPAs are independent of penguins `\(P\)`, penguins affect fish biomass
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \beta_2P_i + \epsilon_i$$`
+
+
+`$$\beta_{penguin} = 0.2$$`
+
+`$$cor(MPA,P) = 0$$`
+
+Estimated Model
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \epsilon_i$$`
+
+
+
+
+---
+
+
+# Omitted Variable Bias in Action
+
+.pull-left[
+True Model: 
+
+MPAs are independent of penguins `\(P\)`, penguins affect fish biomass
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \beta_{penguin}P_i + \epsilon_i$$`
+
+`$$\beta_{penguin} = 0.2$$`
+
+`$$cor(MPA,P) = 0$$`
+
+Estimated Model
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \epsilon_i$$`
+
+MPA Effect = `\(\color{red}{\text{0.2}}\)`
+
+
+] .pull-right[
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#djprlixhgs .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#djprlixhgs .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#djprlixhgs .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#djprlixhgs .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#djprlixhgs .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#djprlixhgs .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#djprlixhgs .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#djprlixhgs .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#djprlixhgs .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#djprlixhgs .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#djprlixhgs .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#djprlixhgs .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#djprlixhgs .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#djprlixhgs .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#djprlixhgs .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#djprlixhgs .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#djprlixhgs .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#djprlixhgs .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#djprlixhgs .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#djprlixhgs .gt_left {
+  text-align: left;
+}
+
+#djprlixhgs .gt_center {
+  text-align: center;
+}
+
+#djprlixhgs .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#djprlixhgs .gt_font_normal {
+  font-weight: normal;
+}
+
+#djprlixhgs .gt_font_bold {
+  font-weight: bold;
+}
+
+#djprlixhgs .gt_font_italic {
+  font-style: italic;
+}
+
+#djprlixhgs .gt_super {
+  font-size: 65%;
+}
+
+#djprlixhgs .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="djprlixhgs" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Penguins ind. of MPA</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">(Intercept)</td>
+      <td class="gt_row gt_left">-0.003</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left"></td>
+      <td class="gt_row gt_left">(0.009)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="color: red;">mpa</td>
+      <td class="gt_row gt_left" style="color: red;">0.195</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.013)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Num.Obs.</td>
+      <td class="gt_row gt_left">1000</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2</td>
+      <td class="gt_row gt_left">0.187</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2 Adj.</td>
+      <td class="gt_row gt_left">0.186</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">AIC</td>
+      <td class="gt_row gt_left">-339.1</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">BIC</td>
+      <td class="gt_row gt_left">-324.4</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Log.Lik.</td>
+      <td class="gt_row gt_left">172.544</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">F</td>
+      <td class="gt_row gt_left">229.257</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+]
+---
+
+#  Omitted Variable Bias in Action
+.pull-left[
+True Model: 
+
+MPAs are correlated with penguins `\(P\)`, penguins don't affect fish biomass
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \beta_{penguin}P_i + \epsilon_i$$`
+
+
+`$$\beta_{penguin} = 0$$`
+
+`$$cor(MPA,P) &gt; 0$$`
+
+Estimated Model
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \epsilon_i$$`
+
+MPA Effect = `\(\color{red}{\text{0.2}}\)`
+] .pull-right[
+
+
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#qdggambfjm .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#qdggambfjm .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#qdggambfjm .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#qdggambfjm .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#qdggambfjm .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#qdggambfjm .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#qdggambfjm .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#qdggambfjm .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qdggambfjm .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qdggambfjm .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#qdggambfjm .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#qdggambfjm .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#qdggambfjm .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#qdggambfjm .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qdggambfjm .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qdggambfjm .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#qdggambfjm .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#qdggambfjm .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qdggambfjm .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#qdggambfjm .gt_left {
+  text-align: left;
+}
+
+#qdggambfjm .gt_center {
+  text-align: center;
+}
+
+#qdggambfjm .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#qdggambfjm .gt_font_normal {
+  font-weight: normal;
+}
+
+#qdggambfjm .gt_font_bold {
+  font-weight: bold;
+}
+
+#qdggambfjm .gt_font_italic {
+  font-style: italic;
+}
+
+#qdggambfjm .gt_super {
+  font-size: 65%;
+}
+
+#qdggambfjm .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="qdggambfjm" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Penguins ind. of MPA</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Penguins ind. of fish</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">(Intercept)</td>
+      <td class="gt_row gt_left">-0.003</td>
+      <td class="gt_row gt_left">-0.001</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left"></td>
+      <td class="gt_row gt_left">(0.009)</td>
+      <td class="gt_row gt_left">(0.002)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="color: red;">mpa</td>
+      <td class="gt_row gt_left" style="color: red;">0.195</td>
+      <td class="gt_row gt_left" style="color: red;">0.200</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.013)</td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.003)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Num.Obs.</td>
+      <td class="gt_row gt_left">1000</td>
+      <td class="gt_row gt_left">1000</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2</td>
+      <td class="gt_row gt_left">0.187</td>
+      <td class="gt_row gt_left">0.795</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2 Adj.</td>
+      <td class="gt_row gt_left">0.186</td>
+      <td class="gt_row gt_left">0.795</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">AIC</td>
+      <td class="gt_row gt_left">-339.1</td>
+      <td class="gt_row gt_left">-3117.3</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">BIC</td>
+      <td class="gt_row gt_left">-324.4</td>
+      <td class="gt_row gt_left">-3102.6</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Log.Lik.</td>
+      <td class="gt_row gt_left">172.544</td>
+      <td class="gt_row gt_left">1561.649</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">F</td>
+      <td class="gt_row gt_left">229.257</td>
+      <td class="gt_row gt_left">3874.631</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+
+]
+
+
+---
+
+# Omitted Variable Bias in Action
+
+True Model: 
+
+MPAs are correlated with penguins `\(P\)`, penguins affect fish biomass
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \beta_{penguin}P_i + \epsilon_i$$`
+
+
+`$$\beta_{penguin} = 0.2$$`
+
+`$$cor(MPA,P) &gt; 0$$`
+
+Estimated Model
+
+`$$y_i = \beta_0 + \beta_1MPA_i + \epsilon_i$$`
+
+MPA Effect = `\(\color{red}{\text{0.2}}\)`
+
+---
+
+# Omitted Variable Bias in Action
+MPA Effect = `\(\color{red}{\text{0.2}}\)`
+
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#otvehuesln .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: smaller;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#otvehuesln .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#otvehuesln .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#otvehuesln .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#otvehuesln .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#otvehuesln .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#otvehuesln .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: smaller;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#otvehuesln .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: smaller;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#otvehuesln .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#otvehuesln .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#otvehuesln .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#otvehuesln .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#otvehuesln .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#otvehuesln .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#otvehuesln .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#otvehuesln .gt_row {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#otvehuesln .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#otvehuesln .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#otvehuesln .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#otvehuesln .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#otvehuesln .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#otvehuesln .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#otvehuesln .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#otvehuesln .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#otvehuesln .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#otvehuesln .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#otvehuesln .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#otvehuesln .gt_left {
+  text-align: left;
+}
+
+#otvehuesln .gt_center {
+  text-align: center;
+}
+
+#otvehuesln .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#otvehuesln .gt_font_normal {
+  font-weight: normal;
+}
+
+#otvehuesln .gt_font_bold {
+  font-weight: bold;
+}
+
+#otvehuesln .gt_font_italic {
+  font-style: italic;
+}
+
+#otvehuesln .gt_super {
+  font-size: 65%;
+}
+
+#otvehuesln .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="otvehuesln" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Penguins ind. of MPA</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Penguins ind. of fish</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Penguins = MPA &amp; Penguins eat Fish</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">(Intercept)</td>
+      <td class="gt_row gt_left">-0.003</td>
+      <td class="gt_row gt_left">-0.001</td>
+      <td class="gt_row gt_left">-0.011</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left"></td>
+      <td class="gt_row gt_left">(0.009)</td>
+      <td class="gt_row gt_left">(0.002)</td>
+      <td class="gt_row gt_left">(0.009)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="color: red;">mpa</td>
+      <td class="gt_row gt_left" style="color: red;">0.195</td>
+      <td class="gt_row gt_left" style="color: red;">0.200</td>
+      <td class="gt_row gt_left" style="color: red;">0.321</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.013)</td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.003)</td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.013)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Num.Obs.</td>
+      <td class="gt_row gt_left">1000</td>
+      <td class="gt_row gt_left">1000</td>
+      <td class="gt_row gt_left">1000</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2</td>
+      <td class="gt_row gt_left">0.187</td>
+      <td class="gt_row gt_left">0.795</td>
+      <td class="gt_row gt_left">0.369</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2 Adj.</td>
+      <td class="gt_row gt_left">0.186</td>
+      <td class="gt_row gt_left">0.795</td>
+      <td class="gt_row gt_left">0.368</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">AIC</td>
+      <td class="gt_row gt_left">-339.1</td>
+      <td class="gt_row gt_left">-3117.3</td>
+      <td class="gt_row gt_left">-274.5</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">BIC</td>
+      <td class="gt_row gt_left">-324.4</td>
+      <td class="gt_row gt_left">-3102.6</td>
+      <td class="gt_row gt_left">-259.8</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Log.Lik.</td>
+      <td class="gt_row gt_left">172.544</td>
+      <td class="gt_row gt_left">1561.649</td>
+      <td class="gt_row gt_left">140.241</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">F</td>
+      <td class="gt_row gt_left">229.257</td>
+      <td class="gt_row gt_left">3874.631</td>
+      <td class="gt_row gt_left">582.638</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+
+
+---
+
+
+# Omitted Variable Bias In Action
+
+.pull-left[
+What's the solution to OVB?
+
+Put a bird (coefficient) on it!
+
+Include all the variables
+  - If they would have caused OVB, problem solved
+  - If not, who cares (prediction cares, but we don't care about that)
+  - This is why stepwise AIC selection is a **bad idea** if you care about causality
+  
+
+Identification strategy known as "selection on observables"
+
+.center[*I am able to observe and control for every possible confounding variable, so my treatment effect is causal*]
+
+] .pull-right[
+
+&lt;img src="https://64.media.tumblr.com/tumblr_lps76hjF2M1qzu1tpo1_400.gif" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+
+---
+
+# Collider Bias - Nothing is ever easy
+
+I want to study the effect of MPA size on fish biomass
+
+Someone (Ray) says that I need to control for the effect of fishing pressure
+
+MPAs affect fishing pressure, fishing pressure affects fish, seems like classic OVB
+
+So, I control for both MPA size and fishing pressure, problem solved!
+
+
+---
+
+# Collider Bias - Nothing is ever easy &lt;sup&gt;1&lt;/sup&gt;
+
+.pull-left[
+Suppose there's another factor out there though: *strengh of management*
+
+Higher management strength causes lower fishing mortality, but also affects fish biomass through other pathways (e.g. restrictions on polluting activities near our site)
+
+Fishing pressure is now a "collider": what happens if we include it in our regression?
+
+] .pull-right[
+
+
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/collider.jpeg" style="display: block; margin: auto;" /&gt;
+
+
+]
+.footnote[
+[1] Inspired by Statistical Rethinking 2nd Edition, by Richard McElreath
+]
+
+---
+
+# Collider Bias - Nothing is ever easy
+.left-column[
+
+
+
+
+True effect of fishing: -0.2
+
+True direct effect of MPA: 0
+
+True direct effect management: -1
+
+] .right-column[
+
+
+
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#furnaoihqd .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#furnaoihqd .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#furnaoihqd .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#furnaoihqd .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#furnaoihqd .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#furnaoihqd .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#furnaoihqd .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#furnaoihqd .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#furnaoihqd .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#furnaoihqd .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#furnaoihqd .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#furnaoihqd .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#furnaoihqd .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#furnaoihqd .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#furnaoihqd .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#furnaoihqd .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#furnaoihqd .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#furnaoihqd .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#furnaoihqd .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#furnaoihqd .gt_left {
+  text-align: left;
+}
+
+#furnaoihqd .gt_center {
+  text-align: center;
+}
+
+#furnaoihqd .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#furnaoihqd .gt_font_normal {
+  font-weight: normal;
+}
+
+#furnaoihqd .gt_font_bold {
+  font-weight: bold;
+}
+
+#furnaoihqd .gt_font_italic {
+  font-style: italic;
+}
+
+#furnaoihqd .gt_super {
+  font-size: 65%;
+}
+
+#furnaoihqd .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="furnaoihqd" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Collider Bias</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Control for Management</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">f</td>
+      <td class="gt_row gt_left">-0.709</td>
+      <td class="gt_row gt_left">-0.185</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left"></td>
+      <td class="gt_row gt_left">(0.020)</td>
+      <td class="gt_row gt_left">(0.023)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="color: red;">mpa</td>
+      <td class="gt_row gt_left" style="color: red;">-0.236</td>
+      <td class="gt_row gt_left" style="color: red;">0.021</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left"></td>
+      <td class="gt_row gt_left">(0.030)</td>
+      <td class="gt_row gt_left">(0.025)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">management</td>
+      <td class="gt_row gt_left"></td>
+      <td class="gt_row gt_left">1.048</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.032)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Num.Obs.</td>
+      <td class="gt_row gt_left">2000</td>
+      <td class="gt_row gt_left">2000</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2</td>
+      <td class="gt_row gt_left">0.400</td>
+      <td class="gt_row gt_left">0.608</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2 Adj.</td>
+      <td class="gt_row gt_left">0.400</td>
+      <td class="gt_row gt_left">0.607</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">AIC</td>
+      <td class="gt_row gt_left">6586.6</td>
+      <td class="gt_row gt_left">5740.3</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">BIC</td>
+      <td class="gt_row gt_left">6603.4</td>
+      <td class="gt_row gt_left">5762.7</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Log.Lik.</td>
+      <td class="gt_row gt_left">-3290.285</td>
+      <td class="gt_row gt_left">-2866.159</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">F</td>
+      <td class="gt_row gt_left">667.061</td>
+      <td class="gt_row gt_left">1030.927</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+]
+---
+
+# Collider Bias 
+
+Fishing mortality is correlated with MPA and has an affect on fish - I thought you said controlling for it would save me from omitted variable bias!!
+
+
+&lt;img src="intro-to-causality_files/figure-html/unnamed-chunk-16-1.svg" style="display: block; margin: auto;" /&gt;
+
+**Knowing fishing mortality and knowing MPA implicitly tells us something about management, and management affects fish**
+
+
+???
+
+---
+
+# Reverse Causality
+It's bad....
+.pull-left[
+&lt;img src="intro-to-causality_files/figure-html/unnamed-chunk-17-1.svg" style="display: block; margin: auto;" /&gt;
+] .pull-right[
+
+True effect of price on fish = `\(\color{red}{\text{-0.05}}\)`
+
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#ztlfckwbnz .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ztlfckwbnz .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ztlfckwbnz .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ztlfckwbnz .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ztlfckwbnz .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ztlfckwbnz .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ztlfckwbnz .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ztlfckwbnz .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ztlfckwbnz .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ztlfckwbnz .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ztlfckwbnz .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ztlfckwbnz .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ztlfckwbnz .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#ztlfckwbnz .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ztlfckwbnz .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ztlfckwbnz .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ztlfckwbnz .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ztlfckwbnz .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ztlfckwbnz .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ztlfckwbnz .gt_left {
+  text-align: left;
+}
+
+#ztlfckwbnz .gt_center {
+  text-align: center;
+}
+
+#ztlfckwbnz .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ztlfckwbnz .gt_font_normal {
+  font-weight: normal;
+}
+
+#ztlfckwbnz .gt_font_bold {
+  font-weight: bold;
+}
+
+#ztlfckwbnz .gt_font_italic {
+  font-style: italic;
+}
+
+#ztlfckwbnz .gt_super {
+  font-size: 65%;
+}
+
+#ztlfckwbnz .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="ztlfckwbnz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"> </th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Fish on Price</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">(Intercept)</td>
+      <td class="gt_row gt_left">-5.691</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left"></td>
+      <td class="gt_row gt_left">(0.464)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="color: red;">price</td>
+      <td class="gt_row gt_left" style="color: red;">-2.299</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
+      <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;">(0.091)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Num.Obs.</td>
+      <td class="gt_row gt_left">100</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2</td>
+      <td class="gt_row gt_left">0.867</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">R2 Adj.</td>
+      <td class="gt_row gt_left">0.865</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">AIC</td>
+      <td class="gt_row gt_left">567.3</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">BIC</td>
+      <td class="gt_row gt_left">575.1</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Log.Lik.</td>
+      <td class="gt_row gt_left">-280.654</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">F</td>
+      <td class="gt_row gt_left">636.687</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+
+]
+
+---
+
+# Remove your Hidden Penguins!
+
+.pull-left[
+Selection on observables can work!
+
+But, there's always a risk that there's something you didn't measure out there messing you up
+
+[Identification strategies](https://scunning.com/causalinference_norap.pdf) help control for unobserved confounders with fewer assumptions than "selection on observables"
+
+- Difference-in-difference
+  - Synthetic Controls
+- Propensity Scores
+- Within-Estimator
+- Regression Discontinuity 
+- Instrumental Variables (reverse causality)
+- [Empirical Dynamic modeling](https://science.sciencemag.org/content/338/6106/496) &amp; [DAGs](http://bayes.cs.ucla.edu/jp_home.html)
+
+] .pull-right[
+
+&lt;img src="https://media.giphy.com/media/Wz7gk4e2Pxcmk/giphy.gif" style="display: block; margin: auto;" /&gt;
+
+
+]
+---
+
+
+class: center, middle
+
+# How close is this study to a randomized experiment?
+
+# How does it try and control for unobserved confounders?
+
+---
+
+class: center, middle, inverse
+
+# Evaluating Causal Claims
+
+---
+
+
+# No Causation Without Manipulaion
+
+In other words, if you want to know the effect of something, you need to observe what happens when that thing changes
+
+.center[*Where is the "experiment" in the study?*]
+
+- Before-after?
+  - What else might have changed?
+
+- With-Without?
+  - Is space a reasonable substitute for time?
+
+- Synthetic Control?
+  - Is it a good out-of-sample predictor?
+  
+  **Reverse Causality**
+
+---
+
+# Is there a clear identification strategy?
+
+This is something that econ does very well: hard to even publish on empirical program evaluation without a clear identification strategy. 
+
+- Is there a mechanisms for controlling for unobserved confounders?
+  
+  - e.g. difference-in-difference / BACI
+  
+  - Is the strategy valid? Are spatial controls outside an MPA unaffected by the treatment?
+
+- If identification strategy is basically selection on observables...
+  
+  - Is this acknowledged and evaluated in the text?
+    - How do they think treatment is assigned and why do the variables they include deal with it? Why is risk of OVB minimal?
+  
+  - Selection on observables + any kind of AIC style model selection == **danger**
+    - AIC tells you about *prediction*, not *causality*
+
+---
+
+# Do the results apply outside the study?
+
+Suppose I run a study on the effects of motivational halftime speeches on NBA scoring performance, and find that they increase shot accuracy by 10%. 
+
+Does that mean that if you give me a motivational speech then put me in the second half of a playoff basketball game that I'll be 10% more accurate? **probably not**
+
+This is the difference in **average treatment effect on the treated (ATT)** and **average treatment effect**. 
+
+If a study claims to be estimating average treatment effects, how reasonable is it the the same model used to estimate the causal effect would apply to the broader population?
+
+
+---
+
+# In Defense of R&lt;sup&gt;2&lt;/sup&gt;
+
+R&lt;sup&gt;2&lt;/sup&gt; measures the proportion of the variance in the outcome explained by the model. 
+
+It is entirely possible to have a model that estimates a precise and meaningful causal effect, but has a very low R&lt;sup&gt;2&lt;/sup&gt;
+
+.center[*but what does this imply*?]
+
+--
+
+- Most of the variance is explained my something other than the treatment
+  - As a manager, good to know if the policy we're evaluating drives the bus or is hanging off the back bumper
+
+- This implies that we have a very powerful model
+  - We were able to find a very small needle in a big haystack
+  - Does that seem justified?
+
+
+---
+
+# "Significance" and friends
+.pull-left[
+
+**Frequentist**
+- If you're playing by frequentist rules, you have to play by the rules
+  - No such thing as "nearly significant"
+- If p = 0.0499999, I'd like to see results for other model configurations
+
+**Bayesian**
+- No such thing as "significance"
+- No more arbitrary thresholds! Yay. 
+- But where do you draw the line?
+  - Does text reflect the actual posterior probability distributions?
+
+].pull-right[
+&lt;br&gt;
+&lt;br&gt;
+&lt;img src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41586-020-2519-y/MediaObjects/41586_2020_2519_Fig1_HTML.png?as=webp" style="display: block; margin: auto;" /&gt;
+
+
+]
+
+???
+Our civil society metric (voice and accountabil- ity) was associated with a higher likelihood of sharks being observed. In addition, nations with larger coastal populations coincided with sharks not being observed, whereas we found little evidence for an effect of increased national wealth (through the human development index).
+---
+
+# Effect Sizes
+
+- Big red flag if p-values are reported without effect sizes!
+
+- For policy evaluation, there's a big difference between MPAs having a significant 0.01% effect size and a significant 50% effect size
+  - Show me the intervals!
+  
+- Small and significant effect implies really powerful model
+
+- Large and significant effect
+  - Cool! but.....
+  - Big and clear effects in complex systems are probably rare
+  - Is this a well-studied system: why has no-one else found it before?
+  - Is it too good to be true?
+
+---
+
+# Effect Sizes
+
+.pull-left[
+
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/when-contact.png" width="3349" style="display: block; margin: auto;" /&gt;
+
+
+]
+.pull-right[
+&gt; A difference of 0.8 on a five-point scale . . . wow! You rarely see this sort of thing...So we’re talking about a causal effect that’s a full 40% of what is pretty much the maximum change imaginable. Wow, indeed. And, judging by the small standard errors (again, see the graphs above), these effects are real, not obtained by capitalizing on chance or the statistical significance filter or anything like that. -- [Andrew Gelman](https://www.washingtonpost.com/news/monkey-cage/wp/2015/05/20/fake-study-on-changing-attitudes-sometimes-a-claim-that-is-too-good-to-be-true-isnt/?arc404=true)
+
+]
+
+
+---
+
+# Just-So Stories
+
+.pull-left[
+
+- "The results that fit our narrative mean that our hypotheses were right"
+
+- "The results that don't fit our narrative mean that there was a problem with those data"
+
+- Possible, but is it likely?
+
+
+] .pull-right[
+&lt;img src="https://offtheshelf.com/wp-content/uploads/2014/08/justsostories.jpg" width="75%" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+
+# Last and (I think) Least - Technical model details!
+
+This may be controversial. IMO we focus a LOT on questions like log-normal vs gamma, random vs. fixed effects, X's amazing test of awesomeness vs Y's even better test of greatness
+
+In my experience, these things matter, but often at the margin
+  
+  - Matter if  you're hunting for significance....
+  
+  - They often don't change the *story*
+
+.center[**Causal inference problems get less attention but can mess you up a lot more than not using the exact right statistical test**]
+
+  
+
+
+---
+
+# Back to the drumlines.....
+
+&gt; Banning drumlines (29% (−13–52%)) or moving towards more selective hook and line fishing (25% (−8–48%)) were estimated to be less effective but may be more-acceptable management interventions in some contexts -- MacNeil et al. 2020
+
+.center[What do we think?]
+
+???
+
+I think this is a good example because it's not clear cut right or wrong
+
+Thanks Charmane, lots of interesting stuff in here. Might be worth a dedicated lab discussion some time in the future as a case study in challenges of talking about statistical results, particularly in a short-format journal written with appeal to a broad audience in mind. If we were playing by "traditional" frequentist rules, roughly speaking few of the variables in Figure 1 would be "significant" at the 0.05 level, or mostly even at the 0.1 level. I'm not suggesting that we should play by those rules, but it's interesting to think that were this same study to be published say 10 years ago in a frequentist manner, technically speaking many of the variables that they talk about in the paper aren't "significant". I.e. in a frequentist sense, we would probably say "Our civil society metric (voice and accountability) was not significantly associated with a higher likelihood of sharks being observed", as opposed to "Our civil society metric (voice and accountability) was associated with a higher likelihood of sharks being observed". Which, technically speaking, there is greater probability of a positive association between civil society metric and sharks, but also a greater than 10% probability that the associate is negative. Makes you wonder how our interpretation of a lot of old frequentist studies would change if we viewed them in a Bayesian light.
+
+There's some confusing interpretation of variables. For example, they state that
+
+"Banning drumlines (29% (−13–52%)) or moving towards more selective hook and line fishing (25% (−8–48%)) were estimated to be less effective but may be more-acceptable management interventions in some contexts"
+
+But, according to figure two, drumlines asnd hook and line have roughly opposite mean effect sizes (and I'm not clear from those figures whether presence for things like a fishing fear refers to presence of the gear or presence of management of that gear?). For either interpretation, both hook and line and drumline can't mean the same thing: One of them, according to their results, has more posterior support for a negative effect on shark MaxN. Unless they're doing something like "presence" means presence of drumlines for drumlines, but means rule saying you have to only use hook and line for hook and line?. I'm all for moving beyond p-value of bust, but it does make it hard to talk about these kinds of results when nontrivial parts of the posterior effect size cross zero. Even if the mean is for a positive effect size, if the posterior crosses zero meaningfully there's also evidence for a negative effect that can't just be ignored. Referring to variables with support for a negative effect (both  banning drumlines or moving towards more selective hook size have) as  "less effective" is a little off IMO; most readers would take that as saying that they work, just less than something else, when according to their results there is  support for a positive or a negative effect.
+
+Some causal interpretation fun as well! This study doesn't techincally answer the question about banning drumlines or moving towards selective hooks. It estimates the posterior probability density of maxN for places that do/do not have drumlines / hook and line. It could be that people use drumlines in places that for exogenous reasons have less sharks and so sharks are harder to find (maybe overfishing of prey species by other gears). If that was the case, banning druminlines wouldn't increase sharks. Not saying that's the case, I'd agree that it's more plausible that having a lot of drumlines around is tough on sharks (exhibit A, dusky shark caught on a drumline ,safely tagged and released though!), but worth thinking about what exactly the stastical analysis does and does not tell us.
+
+Anyway, happy friday from the lab's resident wet blanket!
+
+Dan
+
+
+---
+
+
+# 
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/drumlines.jpeg" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
