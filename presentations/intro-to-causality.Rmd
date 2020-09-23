@@ -32,7 +32,7 @@ set.seed(42)
 class: center, middle, inverse
 # Releasing your Inner Skeptic
 ## (Very) Intro to Causal Inference
-### Dan Ovando - Hilborn Lab Meeting
+### Dan Ovando - Hilborn/Fay Lab Meeting
 ### `r Sys.Date()`
 
 
@@ -41,17 +41,14 @@ knitr::include_graphics("https://media.giphy.com/media/KtbPylMXJ6IPS/giphy.gif")
 ```
 
 
-???
-
-Image credit: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sharingan_triple.svg)
-
 ---
+
 
 # Is Wine Good For You?
 
 .pull-left[
 
-Seems like it should be an easy question to answer every slow news day
+Seems like it should be an easy question, but we get a new answer every slow news day
 
 Why?
 
@@ -82,7 +79,7 @@ knitr::include_graphics("https://media.giphy.com/media/E3L5goMMSoAAo/giphy.gif")
 Answering "is wine good for you" seems like it should be easier than say what makes an ITQ work...
 
 
-So what does this say about program evaluation in fisheries?
+So what does this say about program evaluation in the natural world?
   
 --
 
@@ -94,7 +91,10 @@ So what does this say about program evaluation in fisheries?
 
 ---
 
-# Less Drum-Lines = More Sharks?
+
+
+
+# Less DrumLines = More Sharks?
 
 <br>
 <br>
@@ -145,7 +145,7 @@ Since we can't observe the same unit with and without treatment, we have to turn
 
 Estimate the mean difference between treated and untreated groups
 
-$$E[Y_i|T=1] - E[y_i|T=0]$$
+$$E[y|T=1] - E[y|T=0]$$
 
 In order for this to pass the "causal" test, ***treatment has to be as good as randomly assigned***
 
@@ -175,10 +175,11 @@ Ask yourself:
 
 .pull-left[
 
-Since we can never **proove** causality, easy to be a "causal inference guy"
+we can never **proove** causality
+  - Easy to always be the "but what about causality" person
   - Give me good descriptive stats over bad causal inference any day
 
-But, it really can matter
+But, causality really can matter
   - Omitted Variable Bias
   - Collider Bias
   - Reverse Causality
@@ -239,7 +240,7 @@ True Model: MPAs are independent of penguins $P$, penguins affect fish biomass
 $$y_i = \beta_0 + \beta_1MPA_i + \beta_2P_i + \epsilon_i$$
 
 
-$$\beta_{penguin} = 0.2$$
+$$\beta_{penguin} = -0.2$$
 
 $$cor(MPA,P) = 0$$
 
@@ -255,7 +256,7 @@ b0 <-  0
 
 b1 <-  .2
 
-b2 <-  .2
+b2 <-  -.2
 
 sigma <-  0.05
 
@@ -279,7 +280,7 @@ MPAs are independent of penguins $P$, penguins affect fish biomass
 
 $$y_i = \beta_0 + \beta_1MPA_i + \beta_{penguin}P_i + \epsilon_i$$
 
-$$\beta_{penguin} = 0.2$$
+$$\beta_{penguin} = -0.2$$
 
 $$cor(MPA,P) = 0$$
 
@@ -384,7 +385,7 @@ b0 <-  0
 
 b1 <- .2
 
-b2 <-  0.2
+b2 <-  -0.2
 
 cor <- 0.5
 
@@ -728,12 +729,12 @@ It is entirely possible to have a model that estimates a precise and meaningful 
 
 --
 
-- Most of the variance is explained my something other than the treatment
-  - As a manager, good to know if the policy we're evaluating drives the bus or is hanging off the back bumper
+- Most of the variance is explained by something other than the treatment
+  - Good to know if a policy drives the bus or is hanging off the back bumper
+  - There is a lot of potential for OVB etc.
+    - Have to assume either all other variance is noise, or independent of included data!
 
 - This implies that we have a very powerful model
-  - We were able to find a very small needle in a big haystack
-  - Does that seem justified?
 
 
 ---
@@ -743,7 +744,7 @@ It is entirely possible to have a model that estimates a precise and meaningful 
 
 **Frequentist**
 - If you're playing by frequentist rules, you have to play by the rules
-  - No such thing as "nearly significant"
+  - Confidence intervals are not credible intervals
 - If p = 0.0499999, I'd like to see results for other model configurations
 
 **Bayesian**
@@ -756,7 +757,7 @@ It is entirely possible to have a model that estimates a precise and meaningful 
 <br>
 <br>
 ```{r}
-knitr::include_graphics("https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41586-020-2519-y/MediaObjects/41586_2020_2519_Fig1_HTML.png?as=webp")
+knitr::include_graphics(here::here("imgs", "creds.png"))
 
 ```
 
@@ -765,6 +766,9 @@ knitr::include_graphics("https://media.springernature.com/full/springer-static/i
 
 ???
 Our civil society metric (voice and accountabil- ity) was associated with a higher likelihood of sharks being observed. In addition, nations with larger coastal populations coincided with sharks not being observed, whereas we found little evidence for an effect of increased national wealth (through the human development index).
+
+Estimated relative effect sizes for the influence of national socio-economic conditions (including the human development index (HDI)) on the expected proportion of negative binomial variates on BRUVS sets
+. The reported values are the highest posterior density median values (circles), with 50% (thick lines) and 90% (thin lines) uncertainty intervals. Black symbols indicate that the 90% uncertainty intervals did not overlap zero; grey symbols indicate that the 50% uncertainty intervals did not overlap zero; and white symbols indicate that the 50% uncertainty intervals did overlap zero.
 ---
 
 # Effect Sizes
@@ -788,7 +792,7 @@ Our civil society metric (voice and accountabil- ity) was associated with a high
 
 .pull-left[
 
-```{r}
+```{r, out.width='150%'}
 knitr::include_graphics(here::here("imgs","when-contact.png"))
 ```
 
@@ -877,5 +881,9 @@ knitr::include_graphics(here::here("imgs", "drumlines.jpeg"))
 
 ---
 
+class: center, middle, inverse
 
+# extras
+
+---
 

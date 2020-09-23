@@ -4,7 +4,7 @@
     <title>Wet-Blanketing 101</title>
     <meta charset="utf-8" />
     <meta name="author" content="Dan Ovando" />
-    <meta name="date" content="2020-09-11" />
+    <meta name="date" content="2020-09-14" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
@@ -18,24 +18,21 @@
 class: center, middle, inverse
 # Releasing your Inner Skeptic
 ## (Very) Intro to Causal Inference
-### Dan Ovando - Hilborn Lab Meeting
-### 2020-09-11
+### Dan Ovando - Hilborn/Fay Lab Meeting
+### 2020-09-14
 
 
 &lt;img src="https://media.giphy.com/media/KtbPylMXJ6IPS/giphy.gif" style="display: block; margin: auto;" /&gt;
 
 
-???
-
-Image credit: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sharingan_triple.svg)
-
 ---
+
 
 # Is Wine Good For You?
 
 .pull-left[
 
-Seems like it should be an easy question to answer every slow news day
+Seems like it should be an easy question, but we get a new answer every slow news day
 
 Why?
 
@@ -64,7 +61,7 @@ Why?
 Answering "is wine good for you" seems like it should be easier than say what makes an ITQ work...
 
 
-So what does this say about program evaluation in fisheries?
+So what does this say about program evaluation in the natural world?
   
 --
 
@@ -76,7 +73,10 @@ So what does this say about program evaluation in fisheries?
 
 ---
 
-# Less Drum-Lines = More Sharks?
+
+
+
+# Less DrumLines = More Sharks?
 
 &lt;br&gt;
 &lt;br&gt;
@@ -123,7 +123,7 @@ Since we can't observe the same unit with and without treatment, we have to turn
 
 Estimate the mean difference between treated and untreated groups
 
-`$$E[Y_i|T=1] - E[y_i|T=0]$$`
+`$$E[y|T=1] - E[y|T=0]$$`
 
 In order for this to pass the "causal" test, ***treatment has to be as good as randomly assigned***
 
@@ -153,10 +153,11 @@ Ask yourself:
 
 .pull-left[
 
-Since we can never **proove** causality, easy to be a "causal inference guy"
+we can never **proove** causality
+  - Easy to always be the "but what about causality" person
   - Give me good descriptive stats over bad causal inference any day
 
-But, it really can matter
+But, causality really can matter
   - Omitted Variable Bias
   - Collider Bias
   - Reverse Causality
@@ -215,7 +216,7 @@ True Model: MPAs are independent of penguins `\(P\)`, penguins affect fish bioma
 `$$y_i = \beta_0 + \beta_1MPA_i + \beta_2P_i + \epsilon_i$$`
 
 
-`$$\beta_{penguin} = 0.2$$`
+`$$\beta_{penguin} = -0.2$$`
 
 `$$cor(MPA,P) = 0$$`
 
@@ -238,7 +239,7 @@ MPAs are independent of penguins `\(P\)`, penguins affect fish biomass
 
 `$$y_i = \beta_0 + \beta_1MPA_i + \beta_{penguin}P_i + \epsilon_i$$`
 
-`$$\beta_{penguin} = 0.2$$`
+`$$\beta_{penguin} = -0.2$$`
 
 `$$cor(MPA,P) = 0$$`
 
@@ -597,7 +598,7 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
   <tbody class="gt_table_body">
     <tr>
       <td class="gt_row gt_left">(Intercept)</td>
-      <td class="gt_row gt_left">-0.003</td>
+      <td class="gt_row gt_left">-0.001</td>
     </tr>
     <tr>
       <td class="gt_row gt_left"></td>
@@ -605,7 +606,7 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
     </tr>
     <tr>
       <td class="gt_row gt_left" style="color: red;">mpa</td>
-      <td class="gt_row gt_left" style="color: red;">0.195</td>
+      <td class="gt_row gt_left" style="color: red;">0.217</td>
     </tr>
     <tr>
       <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
@@ -617,27 +618,27 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
     </tr>
     <tr>
       <td class="gt_row gt_left">R2</td>
-      <td class="gt_row gt_left">0.187</td>
+      <td class="gt_row gt_left">0.213</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">R2 Adj.</td>
-      <td class="gt_row gt_left">0.186</td>
+      <td class="gt_row gt_left">0.212</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">AIC</td>
-      <td class="gt_row gt_left">-339.1</td>
+      <td class="gt_row gt_left">-294.0</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">BIC</td>
-      <td class="gt_row gt_left">-324.4</td>
+      <td class="gt_row gt_left">-279.3</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">Log.Lik.</td>
-      <td class="gt_row gt_left">172.544</td>
+      <td class="gt_row gt_left">150.016</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">F</td>
-      <td class="gt_row gt_left">229.257</td>
+      <td class="gt_row gt_left">270.498</td>
     </tr>
   </tbody>
   
@@ -1015,7 +1016,7 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
   <tbody class="gt_table_body">
     <tr>
       <td class="gt_row gt_left">(Intercept)</td>
-      <td class="gt_row gt_left">-0.003</td>
+      <td class="gt_row gt_left">-0.001</td>
       <td class="gt_row gt_left">-0.001</td>
     </tr>
     <tr>
@@ -1025,7 +1026,7 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
     </tr>
     <tr>
       <td class="gt_row gt_left" style="color: red;">mpa</td>
-      <td class="gt_row gt_left" style="color: red;">0.195</td>
+      <td class="gt_row gt_left" style="color: red;">0.217</td>
       <td class="gt_row gt_left" style="color: red;">0.200</td>
     </tr>
     <tr>
@@ -1040,32 +1041,32 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
     </tr>
     <tr>
       <td class="gt_row gt_left">R2</td>
-      <td class="gt_row gt_left">0.187</td>
+      <td class="gt_row gt_left">0.213</td>
       <td class="gt_row gt_left">0.795</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">R2 Adj.</td>
-      <td class="gt_row gt_left">0.186</td>
+      <td class="gt_row gt_left">0.212</td>
       <td class="gt_row gt_left">0.795</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">AIC</td>
-      <td class="gt_row gt_left">-339.1</td>
+      <td class="gt_row gt_left">-294.0</td>
       <td class="gt_row gt_left">-3117.3</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">BIC</td>
-      <td class="gt_row gt_left">-324.4</td>
+      <td class="gt_row gt_left">-279.3</td>
       <td class="gt_row gt_left">-3102.6</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">Log.Lik.</td>
-      <td class="gt_row gt_left">172.544</td>
+      <td class="gt_row gt_left">150.016</td>
       <td class="gt_row gt_left">1561.649</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">F</td>
-      <td class="gt_row gt_left">229.257</td>
+      <td class="gt_row gt_left">270.498</td>
       <td class="gt_row gt_left">3874.631</td>
     </tr>
   </tbody>
@@ -1451,9 +1452,9 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
   <tbody class="gt_table_body">
     <tr>
       <td class="gt_row gt_left">(Intercept)</td>
-      <td class="gt_row gt_left">-0.003</td>
       <td class="gt_row gt_left">-0.001</td>
-      <td class="gt_row gt_left">-0.011</td>
+      <td class="gt_row gt_left">-0.001</td>
+      <td class="gt_row gt_left">0.009</td>
     </tr>
     <tr>
       <td class="gt_row gt_left"></td>
@@ -1463,9 +1464,9 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
     </tr>
     <tr>
       <td class="gt_row gt_left" style="color: red;">mpa</td>
-      <td class="gt_row gt_left" style="color: red;">0.195</td>
+      <td class="gt_row gt_left" style="color: red;">0.217</td>
       <td class="gt_row gt_left" style="color: red;">0.200</td>
-      <td class="gt_row gt_left" style="color: red;">0.321</td>
+      <td class="gt_row gt_left" style="color: red;">0.079</td>
     </tr>
     <tr>
       <td class="gt_row gt_left" style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #000000;"></td>
@@ -1481,39 +1482,39 @@ MPA Effect = `\(\color{red}{\text{0.2}}\)`
     </tr>
     <tr>
       <td class="gt_row gt_left">R2</td>
-      <td class="gt_row gt_left">0.187</td>
+      <td class="gt_row gt_left">0.213</td>
       <td class="gt_row gt_left">0.795</td>
-      <td class="gt_row gt_left">0.369</td>
+      <td class="gt_row gt_left">0.035</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">R2 Adj.</td>
-      <td class="gt_row gt_left">0.186</td>
+      <td class="gt_row gt_left">0.212</td>
       <td class="gt_row gt_left">0.795</td>
-      <td class="gt_row gt_left">0.368</td>
+      <td class="gt_row gt_left">0.034</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">AIC</td>
-      <td class="gt_row gt_left">-339.1</td>
+      <td class="gt_row gt_left">-294.0</td>
       <td class="gt_row gt_left">-3117.3</td>
-      <td class="gt_row gt_left">-274.5</td>
+      <td class="gt_row gt_left">-312.7</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">BIC</td>
-      <td class="gt_row gt_left">-324.4</td>
+      <td class="gt_row gt_left">-279.3</td>
       <td class="gt_row gt_left">-3102.6</td>
-      <td class="gt_row gt_left">-259.8</td>
+      <td class="gt_row gt_left">-298.0</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">Log.Lik.</td>
-      <td class="gt_row gt_left">172.544</td>
+      <td class="gt_row gt_left">150.016</td>
       <td class="gt_row gt_left">1561.649</td>
-      <td class="gt_row gt_left">140.241</td>
+      <td class="gt_row gt_left">159.359</td>
     </tr>
     <tr>
       <td class="gt_row gt_left">F</td>
-      <td class="gt_row gt_left">229.257</td>
+      <td class="gt_row gt_left">270.498</td>
       <td class="gt_row gt_left">3874.631</td>
-      <td class="gt_row gt_left">582.638</td>
+      <td class="gt_row gt_left">36.409</td>
     </tr>
   </tbody>
   
@@ -2543,12 +2544,12 @@ It is entirely possible to have a model that estimates a precise and meaningful 
 
 --
 
-- Most of the variance is explained my something other than the treatment
-  - As a manager, good to know if the policy we're evaluating drives the bus or is hanging off the back bumper
+- Most of the variance is explained by something other than the treatment
+  - Good to know if a policy drives the bus or is hanging off the back bumper
+  - There is a lot of potential for OVB etc.
+    - Have to assume either all other variance is noise, or independent of included data!
 
 - This implies that we have a very powerful model
-  - We were able to find a very small needle in a big haystack
-  - Does that seem justified?
 
 
 ---
@@ -2558,7 +2559,7 @@ It is entirely possible to have a model that estimates a precise and meaningful 
 
 **Frequentist**
 - If you're playing by frequentist rules, you have to play by the rules
-  - No such thing as "nearly significant"
+  - Confidence intervals are not credible intervals
 - If p = 0.0499999, I'd like to see results for other model configurations
 
 **Bayesian**
@@ -2570,13 +2571,16 @@ It is entirely possible to have a model that estimates a precise and meaningful 
 ].pull-right[
 &lt;br&gt;
 &lt;br&gt;
-&lt;img src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fs41586-020-2519-y/MediaObjects/41586_2020_2519_Fig1_HTML.png?as=webp" style="display: block; margin: auto;" /&gt;
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/creds.png" width="1144" style="display: block; margin: auto;" /&gt;
 
 
 ]
 
 ???
 Our civil society metric (voice and accountabil- ity) was associated with a higher likelihood of sharks being observed. In addition, nations with larger coastal populations coincided with sharks not being observed, whereas we found little evidence for an effect of increased national wealth (through the human development index).
+
+Estimated relative effect sizes for the influence of national socio-economic conditions (including the human development index (HDI)) on the expected proportion of negative binomial variates on BRUVS sets
+. The reported values are the highest posterior density median values (circles), with 50% (thick lines) and 90% (thin lines) uncertainty intervals. Black symbols indicate that the 90% uncertainty intervals did not overlap zero; grey symbols indicate that the 50% uncertainty intervals did not overlap zero; and white symbols indicate that the 50% uncertainty intervals did overlap zero.
 ---
 
 # Effect Sizes
@@ -2600,7 +2604,7 @@ Our civil society metric (voice and accountabil- ity) was associated with a high
 
 .pull-left[
 
-&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/when-contact.png" width="3349" style="display: block; margin: auto;" /&gt;
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/when-contact.png" width="150%" style="display: block; margin: auto;" /&gt;
 
 
 ]
@@ -2683,7 +2687,11 @@ Dan
 
 ---
 
+class: center, middle, inverse
 
+# extras
+
+---
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Artificial Intellegence for Ecology / Natural Sciences</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dan Ovando" />
+    <meta name="date" content="2020-09-23" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="blue-template/css/blue-template.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Artificial Intellegence for Ecology / Natural Sciences
+## SAFS GRFP Workshop
+### Dan Ovando
+### 2020-09-23
+
+---
+
+
+
+
+
+# AI for Ecology / Natural Sciences
+
+1. Quick definitions
+
+2. What is AI good for?
+
+3. Red flags to avoid
+
+---
+
+
+
+# What is Artificial Intellengence?
+
+
+.pull-left[
+
+Artificial Intelligence has been around for a long time!
+
+&gt;The Analytical Engine has no pretensions whatever to originate anything. It can do whatever we know how to order it to perform.... Its province is to assist us in making available what we’re already acquainted with
+&gt;
+&gt; &lt;footer&gt;--- Lady Ada Lovelace, 1843&lt;/footer&gt;
+
+]
+.pull-right[
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/ai-ml-dl.png" width="1603" style="display: block; margin: auto;" /&gt;
+]
+
+.footnote[
+Chollet &amp; Allaire 2018 - Deep Learning with R
+]
+
+???
+In reference to a mechanical computer called the Analytical Engine, referenced by Alan Turing
+---
+
+# What is Machine Learning?
+
+
+.pull-left[
+
+Machine learning advanced structural AI by asking whether computers could **learn** new tasks. 
+
+- "Classical" programming says "if email contains 'get rich quick!' mark as spam
+
+- Machine learning asks given known examples of spam, can computer find rules to identify it?
+
+- Most of you will be working with some form of machine/deep learning
+    - Honestly I never use term "AI" except for pitching 
+
+]
+.pull-right[
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/ai-ml-dl.png" width="1603" style="display: block; margin: auto;" /&gt;
+]
+
+.footnote[
+Chollet &amp; Allaire 2018 - Deep Learning with R
+]
+
+???
+In reference to a mechanical computer called the Analytical Engine, referenced by Alan Turing
+---
+
+# What is Artificial Intellegence?
+
+&lt;img src="https://imgs.xkcd.com/comics/machine_learning.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+
+
+# ML for Predictive Modeling
+
+The primary application for machine learning is **prediction**, not "understanding"
+
+Modeling for Prediction: "Will it rain?"
+  - Are people carrying umbrellas? Probably gonna rain. 
+  - Test by out-of-sample prediction
+  - Realm of machine learning
+  
+Modeling for Understanding: "Why does it rain?"
+  - Probably not because of umbrellas. 
+  - Test by experimentation
+  - Realm of statistics
+  
+Correlation does not equal causation, but some correlations can be great predictors  
+
+**Big red flag: Works claiming to use machine learning for "why" questions**
+
+???
+
+IMO, ecology sometimes has a bad habit of worst of both worlds: low R&lt;sup&gt;2&lt;/sup&gt; and no identification strategy
+
+---
+
+class: center, middle
+# Key Elements of an ML Proposal
+
+
+???
+As a reviewer, I'd basically be looking for BS on ML applications
+---
+
+# Why is Prediction What Matters?
+
+* You need to have a clear case that you have a predictive problem that ML could solve
+
+  - What species is in this picture?
+  
+  - Where do vessels choose to fish?
+  
+  - How many salmon will show up?
+
+* Where will my species live under climate change?
+  - Trickier...
+
+---
+
+# What's your "out of sample" defense?
+
+Where will my species live under climate change?
+
+* ML models are correlation machines 
+
+* Lack of "structure" makes them flexible but also prevents learning from structure
+
+  * You can build biophysical constraints into a structural model
+  
+  * ML model would put fish on the sun if the training data tell it to
+  
+* If we have space-for-time data on future climate, or if climate-related trends extrapolate, ML might be good
+
+* If climate change changes the rules of the game, not so much
+
+.center[***Do the correlations in my training data apply to the world I want to predict?***]
+
+
+---
+
+# What Advantage does ML Give you?
+
+* No one has tried to predict your problem before - how good can you do?
+  * Might save you a lot of time comparing AIC of models A,B,C...
+  * If ML can't predict it, chances of structural modeling doing better are low &lt;sup&gt;1&lt;/sup&gt;
+
+* You suspect there is hidden information in data others have poured over
+  * ML is not that different from a regression, just makes it easier to find the best specification
+  * Why is it likely that "conventional" methods missed something?
+
+* You're bringing some new data to an old problem
+  * You spent years labeling a training dataset that will break a problem open
+
+* Marginal performance gains are extremely important
+  * 0.5% increase in accuracy may be **REALLY** valuable to a company
+  * How valuable is a 0.5% increase in weight-at-length prediction skill?
+
+
+
+.footnote[
+[1] Unless structure/theory gives you a lot of information
+]
+
+???
+You have a predictive problem, now why is ML the right tool to solve it?
+
+
+---
+
+# What's your Data Budget?
+
+* Conventional statistics judges models by "significance", identification strategy, effect size, convergence tests, residual diagnostics, etc. 
+
+* Predictive modeling only has one metric: how well do you predict out-of-sample?
+    
+    * ML models typically have thousands of parameters
+    
+      * millions in neural net world
+  
+    * Easy to perfectly fit training data, particularly in ecology where parameters &gt; data
+
+---
+
+
+# What's your Data Budget?
+
+&lt;img src="/Users/danovan/teaching/misc-lectures/imgs/flow.png" width="1015" style="display: block; margin: auto;" /&gt;
+[Applied Predictive Modeling](http://appliedpredictivemodeling.com/)
+
+---
+
+# What's your Data Budget?
+
+You need to make clear that
+
+* You have enough data that you can afford to throw some out
+  * Tree-based methods aren't actually that data-hungry, but as a rule of thumb you need hundreds of observations at least
+
+* You can create a test of what you actually want to predict
+    * Do you have a long enough time series to evaluate your temporal predictive goal?
+    * Do you have enough spatial variation to test  your spatial predictive goal?
+
+* Be cautious claiming "big data"
+  - Generally refers to datasets big enough that you can't load them on a conventional computer all at once
+
+---
+
+
+#  Be Realistic About Your Tools
+
+- Basically a fancy regression problem?
+  
+  - Some kind of tree-based method is probably fine
+  
+- "We will use a deep generative adversarial network to predict length at age" is probably overkill
+
+- "We will use a random forest model to generate complaints submitted at council meetings" will raise some eyebrows as well
+
+- Try to be specific though
+  - Avoid "we will use the `magicblackbox` package in R to automatically implement 1,000 different ML models"
+
+---
+
+class: center, middle
+
+# Fitting Machine Learning Models
+
+---
+
+# Fitting Machine Learning Models
+
+We don't have time to go over this today
+  - See [machine learning lecture](https://github.com/super-advanced-r-fall-2019/machine-learning) from super-advanced R course for some intro
+
+It's not as scary as it sounds!
+  - Can get hard quickly, particularly in neural network world, but mostly they're actually very easy to use
+  - Remember, ML is mostly used by industry: *there's a huge market of tools out there to make your ML life easier*
+  
+You don't need Python!
+  - Most ML work is done in Python, but as with many things underlying code is still C++ or the like
+  - You can access basically all ML from R, and (model) speed shouldn't change much
+  - I use R as my base for ML work (as do lots of people)
+    - Most of the work is actually in data wrangling, plotting etc.
+  - Choice of language depends on use case, not (usually) on "can I do it in R?"
+
+---
+
+
+# A Bestiary of Machine Learning Models
+
+.pull-left[
+Nearly all ML methods can be used for regression or classification
+
+- Random forests
+  - [`ranger`](https://github.com/imbs-hl/ranger)
+
+- Gradient boosting machines
+  - [`xgboost`](https://xgboost.readthedocs.io/en/latest/)
+
+- Neural Networks
+  - [`keras/TensorFlow`](https://tensorflow.rstudio.com/)
+] .pull-right[
+
+There are lots of them....
+
+
+```
+##   [1] "ada"                 "AdaBag"              "AdaBoost.M1"        
+##   [4] "adaboost"            "amdai"               "ANFIS"              
+##   [7] "avNNet"              "awnb"                "awtan"              
+##  [10] "bag"                 "bagEarth"            "bagEarthGCV"        
+##  [13] "bagFDA"              "bagFDAGCV"           "bam"                
+##  [16] "bartMachine"         "bayesglm"            "binda"              
+##  [19] "blackboost"          "blasso"              "blassoAveraged"     
+##  [22] "bridge"              "brnn"                "BstLm"              
+##  [25] "bstSm"               "bstTree"             "C5.0"               
+##  [28] "C5.0Cost"            "C5.0Rules"           "C5.0Tree"           
+##  [31] "cforest"             "chaid"               "CSimca"             
+##  [34] "ctree"               "ctree2"              "cubist"             
+##  [37] "dda"                 "deepboost"           "DENFIS"             
+##  [40] "dnn"                 "dwdLinear"           "dwdPoly"            
+##  [43] "dwdRadial"           "earth"               "elm"                
+##  [46] "enet"                "evtree"              "extraTrees"         
+##  [49] "fda"                 "FH.GBML"             "FIR.DM"             
+##  [52] "foba"                "FRBCS.CHI"           "FRBCS.W"            
+##  [55] "FS.HGD"              "gam"                 "gamboost"           
+##  [58] "gamLoess"            "gamSpline"           "gaussprLinear"      
+##  [61] "gaussprPoly"         "gaussprRadial"       "gbm_h2o"            
+##  [64] "gbm"                 "gcvEarth"            "GFS.FR.MOGUL"       
+##  [67] "GFS.LT.RS"           "GFS.THRIFT"          "glm.nb"             
+##  [70] "glm"                 "glmboost"            "glmnet_h2o"         
+##  [73] "glmnet"              "glmStepAIC"          "gpls"               
+##  [76] "hda"                 "hdda"                "hdrda"              
+##  [79] "HYFIS"               "icr"                 "J48"                
+##  [82] "JRip"                "kernelpls"           "kknn"               
+##  [85] "knn"                 "krlsPoly"            "krlsRadial"         
+##  [88] "lars"                "lars2"               "lasso"              
+##  [91] "lda"                 "lda2"                "leapBackward"       
+##  [94] "leapForward"         "leapSeq"             "Linda"              
+##  [97] "lm"                  "lmStepAIC"           "LMT"                
+## [100] "loclda"              "logicBag"            "LogitBoost"         
+## [103] "logreg"              "lssvmLinear"         "lssvmPoly"          
+## [106] "lssvmRadial"         "lvq"                 "M5"                 
+## [109] "M5Rules"             "manb"                "mda"                
+## [112] "Mlda"                "mlp"                 "mlpKerasDecay"      
+## [115] "mlpKerasDecayCost"   "mlpKerasDropout"     "mlpKerasDropoutCost"
+## [118] "mlpML"               "mlpSGD"              "mlpWeightDecay"     
+## [121] "mlpWeightDecayML"    "monmlp"              "msaenet"            
+## [124] "multinom"            "mxnet"               "mxnetAdam"          
+## [127] "naive_bayes"         "nb"                  "nbDiscrete"         
+## [130] "nbSearch"            "neuralnet"           "nnet"               
+## [133] "nnls"                "nodeHarvest"         "null"               
+## [136] "OneR"                "ordinalNet"          "ordinalRF"          
+## [139] "ORFlog"              "ORFpls"              "ORFridge"           
+## [142] "ORFsvm"              "ownn"                "pam"                
+## [145] "parRF"               "PART"                "partDSA"            
+## [148] "pcaNNet"             "pcr"                 "pda"                
+## [151] "pda2"                "penalized"           "PenalizedLDA"       
+## [154] "plr"                 "pls"                 "plsRglm"            
+## [157] "polr"                "ppr"                 "PRIM"               
+## [160] "protoclass"          "qda"                 "QdaCov"             
+## [163] "qrf"                 "qrnn"                "randomGLM"          
+## [166] "ranger"              "rbf"                 "rbfDDA"             
+## [169] "Rborist"             "rda"                 "regLogistic"        
+## [172] "relaxo"              "rf"                  "rFerns"             
+## [175] "RFlda"               "rfRules"             "ridge"              
+## [178] "rlda"                "rlm"                 "rmda"               
+## [181] "rocc"                "rotationForest"      "rotationForestCp"   
+## [184] "rpart"               "rpart1SE"            "rpart2"             
+## [187] "rpartCost"           "rpartScore"          "rqlasso"            
+## [190] "rqnc"                "RRF"                 "RRFglobal"          
+## [193] "rrlda"               "RSimca"              "rvmLinear"          
+## [196] "rvmPoly"             "rvmRadial"           "SBC"                
+## [199] "sda"                 "sdwd"                "simpls"             
+## [202] "SLAVE"               "slda"                "smda"               
+## [205] "snn"                 "sparseLDA"           "spikeslab"          
+## [208] "spls"                "stepLDA"             "stepQDA"            
+## [211] "superpc"             "svmBoundrangeString" "svmExpoString"      
+## [214] "svmLinear"           "svmLinear2"          "svmLinear3"         
+## [217] "svmLinearWeights"    "svmLinearWeights2"   "svmPoly"            
+## [220] "svmRadial"           "svmRadialCost"       "svmRadialSigma"     
+## [223] "svmRadialWeights"    "svmSpectrumString"   "tan"                
+## [226] "tanSearch"           "treebag"             "vbmpRadial"         
+## [229] "vglmAdjCat"          "vglmContRatio"       "vglmCumulative"     
+## [232] "widekernelpls"       "WM"                  "wsrf"               
+## [235] "xgbDART"             "xgbLinear"           "xgbTree"            
+## [238] "xyf"
+```
+
+
+]
+
+---
+
+# `tidymodels`
+
+The actual "fit a random forest" part of your code can be as simple as 
+
+```r
+my_ai_model &lt;- ranger(bill_length_mm ~ bill_depth_mm, data = penguins)
+```
+
+95% of my ML project code is focused on
+  - testing different data pre-processing steps
+  - creating appropriate testing/training assessment/analysis splits
+  - tuning nuisance parameters
+  - comparing alternative models
+  
+Requires (or made **vastly** easier with) skills in tidy analysis and [functional programming](https://www.weirdfishes.blog/blog/practical-purrr/)
+
+New book, [tidy modeling with R](https://www.tmwr.org/) is a great place to start
+
+[Introduction to Machine Learning with Python](https://www.oreilly.com/library/view/introduction-to-machine/9781449369880/) is a good intro if that's how you roll
+
+
+
+
+---
+
+
+# In Summary
+
+* ML is for prediction!
+  - Maybe it can be part of a bigger "why" project, but can't answer "why" itself
+
+* ML isn't magic: why is ML the right tool for you?
+  * Why wouldn't logistic regression work?
+
+* Make clear that your data budget is enough for your problem
+  * Can you test what you actually need to test
+
+* Keep it simple
+  * Don't bring a neural net to a linear party
+
+
+---
+
+# Additional Resources
+
+
+- [Applied Predictive Modeling](http://appliedpredictivemodeling.com/)
+
+- [Deep Learning with R](https://www.manning.com/books/deep-learning-with-r)
+
+- [Computer Age Statistical Inference](https://web.stanford.edu/~hastie/CASI/)
+
+- [Machine Learning for Everyone](https://vas3k.com/blog/machine_learning/)
+
+- [Hands-On Machine Learning with R](https://bradleyboehmke.github.io/HOML/)
+
+- [Max Kuhn's intro to parsnip](https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface)
+---
+
+class: center, middle
+
+# extras
+
+---
+
+# Predictive Modeling
+
+Predictive modeling falls under "supervised learning" (as opposed to unsupervised, things like clustering algorithms)
+
+Regression (continuous response)
+  - Predict presence of marine mammals
+  - Predict sales on a given day
+  - Predict salmon returns
+  - Judged by things like mean squared error
+
+Classification (categorical response)
+  - What kind of fish is this?
+  - Does a person have a disease?
+  - Judged by things like classification accuracy
+
+???
+This branch of machine learning consists of finding interesting transformations of the input data without the help of any targets, for the purposes of data visualization, data compression, or data denoising, or to better understand the correlations present in the data at hand
+
+Think PCA
+
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="blue-template/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "<div class=\"progress-bar-container\">   <div class=\"progress-bar\" style=\"width: calc(%current% / %total% * 100%);\">   </div> </div>`"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
