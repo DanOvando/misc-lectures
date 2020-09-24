@@ -210,6 +210,15 @@ You have a predictive problem, now why is ML the right tool to solve it?
 
 ---
 
+
+# What Advantage does ML Give You?
+
+```{r, out.height=400, echo = FALSE}
+ include_graphics(here::here("imgs","skynet.png"))
+```
+
+---
+
 # What's your Data Budget?
 
 * Conventional statistics judges models by "significance", identification strategy, effect size, convergence tests, residual diagnostics, etc. 
@@ -356,12 +365,21 @@ New book, [tidy modeling with R](https://www.tmwr.org/) is a great place to star
 
 * Keep it simple
   * Don't bring a neural net to a linear party
+  
+* Balance your audience
+  * Sell it to the screener
+  * Be plausible to a reviewer
 
 
 ---
 
 # Additional Resources
 
+me: danovan@uw.edu
+
+twitter: @danovand0
+
+github: danovando
 
 - [Applied Predictive Modeling](http://appliedpredictivemodeling.com/)
 
@@ -373,7 +391,10 @@ New book, [tidy modeling with R](https://www.tmwr.org/) is a great place to star
 
 - [Hands-On Machine Learning with R](https://bradleyboehmke.github.io/HOML/)
 
-- [Max Kuhn's intro to parsnip](https://resources.rstudio.com/rstudio-conf-2019/parsnip-a-tidy-model-interface)
+New book, [tidy modeling with R](https://www.tmwr.org/) is a great place to start
+
+[Introduction to Machine Learning with Python](https://www.oreilly.com/library/view/introduction-to-machine/9781449369880/) is a good intro if that's how you roll
+
 ---
 
 class: center, middle
